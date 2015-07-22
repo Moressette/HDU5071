@@ -1,0 +1,248 @@
+#include <cstdio>  
+#include <algorithm>  
+#include <cmath>  
+#include <cstring>  
+#include <string>  
+#include <iostream>  
+#define N 5010  
+using namespace std;  
+int s=0,to=0;  
+struct girl  
+{  
+    int u;  
+    long long w;  
+    void init(int x)  
+    {  
+        u=x;  
+        w=0;  
+    }  
+};  
+girl m[5010];  
+void totop(int w)  
+{  
+    girl temp=m[w];  
+    for(int i=w-1;i>=0;i--)  
+        m[i+1]=m[i];  
+    m[0]=temp;  
+}  
+void add(int x)  
+{  
+    int i;  
+    for(i=0;i<s;i++)  
+    {  
+        if(m[i].u==x)  
+            break;  
+    }  
+    if(i!=s)  
+        printf("same priority");  
+    else  
+    {  
+        m[s++].init(x);  
+        printf("success");  
+    }  
+}  
+void close(int x)  
+{  
+    int i,j;  
+    for(i=0;i<s;i++)  
+    {  
+        if(m[i].u == x)  
+            break;  
+    }  
+    if(i==s)  
+        printf("invalid priority");  
+    else  
+    {  
+        if(to==x)  
+            to=0;  
+        printf("close %d with %I64d",m[i].u,m[i].w);  
+        for(j=i;j<s-1;j++)  
+        {  
+            m[j]=m[j+1];  
+        }  
+        s--;  
+    }  
+}  
+void chat(int x)  
+{  
+    int i=0;  
+    if(s==0)  
+        printf("empty");  
+    else if(to!=0)  
+    {  
+        for(i=0;i<s;i++)  
+        {  
+            if(m[i].u==to)  
+            {  
+                m[i].w+=x;  
+                printf("success");  
+                break;  
+            }  
+        }  
+    }  
+    else  
+    {  
+        m[i].w+=x;  
+        printf("success");  
+    }  
+}  
+void rotate(int x)  
+{  
+    if(x<1||x>s)  
+        printf("out of range");  
+    else  
+    {  
+        totop(x-1);  
+        printf("success");  
+    }  
+}  
+void prior()  
+{  
+    int i,max=0;  
+    if(s==0)  
+        printf("empty");  
+    else  
+    {  
+        for(i=1;i<s;i++)  
+        {  
+            if(m[i].u>m[max].u)  
+                max=i;  
+        }  
+        totop(max);  
+        printf("success");  
+    }  
+}  
+void choose(int x)  
+{  
+    int i;  
+    for(i=0;i<s;i++)  
+    {  
+        if(m[i].u==x)  
+            break;  
+    }  
+    if(i!=s)  
+    {  
+        totop(i);  
+        printf("success");  
+    }  
+    else  
+        printf("invalid priority");  
+}  
+void top(int x)  
+{  
+    int i;  
+    for(i=0;i<s;i++)  
+    {  
+        if(m[i].u==x)  
+            break;  
+    }  
+    if(i!=s)  
+    {  
+        to=x;  
+        printf("success");  
+    }  
+    else  
+        printf("invalid priority");  
+}  
+void untop()  
+{  
+    if(to==0)  
+        printf("no such person");  
+    else  
+    {  
+        to=0;  
+        printf("success");  
+    }  
+}  
+void close_all()  
+{  
+    int i,w=-1;  
+    if(to)  
+    {  
+        for(i=0;i<s;i++)  
+        {  
+            if(m[i].u==to&&m[i].w!=0)  
+            {  
+                w=i;  
+                break;  
+            }  
+        }  
+        if(w!=-1)  
+            printf("Bye %d: %I64d\n",to,m[w].w);  
+    }  
+    for(i=0;i<s;i++)  
+    {  
+        if(i!=w&&m[i].w!=0)  
+        {  
+            printf("Bye %d: %I64d\n",m[i].u,m[i].w);  
+        }  
+    }  
+}  
+int main()  
+{  
+    int T;  
+    int n;  
+    int k;  
+    int m;  
+    string str;  
+    scanf("%d",&T);  
+    while(T--)  
+    {  
+        s=0;  
+        to=0;  
+        scanf("%d",&n);  
+        for(k=1;k<=n;k++)  
+        {  
+            cin>>str;  
+            if(str=="Add")  
+            {  
+                scanf("%d",&m);  
+                printf("Operation #%d: ",k);  
+                add(m);  
+            }  
+            if(str=="Close")  
+            {  
+                scanf("%d",&m);  
+                printf("Operation #%d: ",k);  
+                close(m);  
+            }  
+            if(str=="Chat")  
+            {  
+                scanf("%d",&m);  
+                printf("Operation #%d: ",k);  
+                chat(m);  
+            }  
+            if(str=="Rotate")  
+            {  
+                scanf("%d",&m);  
+                printf("Operation #%d: ",k);  
+                rotate(m);  
+            }  
+            if(str=="Prior")  
+            {  
+                printf("Operation #%d: ",k);  
+                prior();  
+            }  
+            if(str=="Choose")  
+            {  
+                scanf("%d",&m);  
+                printf("Operation #%d: ",k);  
+                choose(m);  
+            }  
+            if(str=="Top")  
+            {  
+                scanf("%d",&m);  
+                printf("Operation #%d: ",k);  
+                top(m);  
+            }  
+            if(str=="Untop")  
+            {  
+                printf("Operation #%d: ",k);  
+                untop();  
+            }  
+            printf(".\n");  
+        }  
+        close_all();  
+    }  
+    return 0;  
+}  
